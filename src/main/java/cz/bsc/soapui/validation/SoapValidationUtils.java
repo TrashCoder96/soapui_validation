@@ -7,19 +7,24 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 /**
  * Created by itimofeev on 29.10.2018.
  */
 public class SoapValidationUtils {
 
-    public static void validate(InputStream xml, InputStream xsd) throws SAXException, IOException {
+    public static void validate(InputStream xml, File xsdFile) throws SAXException, IOException {
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(new StreamSource(xsd));
+        Schema schema = factory.newSchema(xsdFile);
         Validator validator = schema.newValidator();
         validator.validate(new StreamSource(xml));
+    }
+
+    public static void validate(String xml, String xsdUrl) throws IOException, SAXException {
+        File xsdFile = new File(xsdUrl);
+        InputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
+        validate(xmlStream, xsdFile);
     }
 
 }
