@@ -1,8 +1,11 @@
 package cz.bsc.soapui.validation;
 
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
+import javax.xml.soap.SOAPBody;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -21,10 +24,13 @@ public class SoapValidationUtils {
         validator.validate(new StreamSource(xml));
     }
 
-    public static void validate(String xml, String xsdUrl) throws IOException, SAXException {
+    public static void validate(SOAPBody body, String xsdUrl) throws Exception {
         File xsdFile = new File(xsdUrl);
-        InputStream xmlStream = new ByteArrayInputStream(xml.getBytes());
-        validate(xmlStream, xsdFile);
+        DOMImplementationLS domImplementationLS = (DOMImplementationLS)body.getOwnerDocument().getImplementation().getFeature("LS", "3.0");
+        LSSerializer serializer = domImplementationLS.createLSSerializer();
+        String str = serializer.writeToString(body.getChildNodes().item(1)).replace("UTF-16", "utf-8");
+        InputStream stream = new ByteArrayInputStream(str.getBytes());
+        validate(stream, xsdFile);
     }
 
 }
