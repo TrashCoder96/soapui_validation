@@ -5,7 +5,10 @@ import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPMessage;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -31,6 +34,16 @@ public class SoapValidationUtils {
         String str = serializer.writeToString(body.getChildNodes().item(1)).replace("UTF-16", "utf-8");
         InputStream stream = new ByteArrayInputStream(str.getBytes());
         validate(stream, xsdFile);
+    }
+
+    public static void validate(String xmlInput, String xsdUrl) throws Exception {
+        MessageFactory factory = MessageFactory.newInstance();
+        SOAPMessage message = factory.createMessage(
+                new MimeHeaders(),
+                new ByteArrayInputStream(xmlInput.getBytes()));
+        SOAPBody body = message.getSOAPBody();
+
+        SoapValidationUtils.validate(body, xsdUrl);
     }
 
 }

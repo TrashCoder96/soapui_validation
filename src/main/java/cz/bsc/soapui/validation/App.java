@@ -1,11 +1,5 @@
 package cz.bsc.soapui.validation;
 
-import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPMessage;
-import java.io.ByteArrayInputStream;
-
 /**
  * Created by itimofeev on 29.10.2018.
  */
@@ -23,13 +17,7 @@ public class App {
                         "   </soapenv:Body>\n" +
                         "</soapenv:Envelope>";
 
-        MessageFactory factory = MessageFactory.newInstance();
-        SOAPMessage message = factory.createMessage(
-                new MimeHeaders(),
-                new ByteArrayInputStream(xmlInput.getBytes()));
-        SOAPBody body = message.getSOAPBody();
-
-        SoapValidationUtils.validate(body, "C:\\Users\\itimofeev\\Desktop\\hc-soapui\\WSDL\\AccountWs05122017\\Accounts.xsd");
+        SoapValidationUtils.validate(xmlInput, "C:\\Users\\itimofeev\\Desktop\\hc-soapui\\WSDL\\AccountWs05122017\\Accounts.xsd");
     }
 
 }
